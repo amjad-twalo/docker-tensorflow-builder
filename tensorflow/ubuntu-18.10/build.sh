@@ -74,7 +74,7 @@ export TF_NEED_ROCM=0
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 
 # Here you can edit this variable to set any optimizations you want.
-export CC_OPT_FLAGS="-march=native"
+export CC_OPT_FLAGS="-march=native -mno-avx -mno-avx2 -mno-avx512f -mno-fma -msse4.1 -msse4.2"
 
 if [ "$USE_GPU" -eq "1" ]; then
   # Cuda parameters
