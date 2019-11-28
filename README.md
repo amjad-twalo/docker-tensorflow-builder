@@ -4,7 +4,7 @@ Docker images to compile TensorFlow yourself.
 
 Tensorflow only provide a limited set of build and it can be challenging to compile yourself on certain configuration. With this `Dockerfile`, you should be able to compile TensorFlow on any Linux platform that run Docker.
 
-Compilation images are provided for Ubuntu 18.10, Ubuntu 16.04, CentOS 7.4 and CentOS 6.6.
+Compilation images are provided for Ubuntu 18.10.
 
 ## Requirements
 
@@ -21,21 +21,26 @@ git clone https://github.com/hadim/docker-tensorflow-builder.git
 
 ### TensoFlow CPU
 
-- Edit the `build.sh` file to modify TensorFlow compilation parameters. Then launch the build:
-
+- Edit the `build.sh` file to modify TensorFlow compilation parameters. 
 ```bash
-LINUX_DISTRO="ubuntu-16.04"
-# or LINUX_DISTRO="ubuntu-18.10"
-# or LINUX_DISTRO="centos-7.4"
-# or LINUX_DISTRO="centos-6.6"
-cd "tensorflow/$LINUX_DISTRO"
+export CC_OPT_FLAGS="-march=native -mno-avx -mno-avx2 -mno-avx512f -mno-fma -msse4.1 -msse4.2"
+```
 
-# Set env variables
-export PYTHON_VERSION=3.6
-export TF_VERSION_GIT_TAG=v1.13.1
-export BAZEL_VERSION=0.19
-export USE_GPU=0
+- To get the appropriate compile optimization flags for **your CPU**, you can run the following command
+```bash
+grep flags -m1 /proc/cpuinfo | cut -d ":" -f 2 | tr '[:upper:]' '[:lower:]' | { read FLAGS; OPT="-march=native"; for flag in $FLAGS; do case "$flag" in "sse4_1" | "sse4_2" | "ssse3" | "fma" | "cx16" | "popcnt" | "avx" | "avx2") OPT+=" -m$flag";; esac; done; MODOPT=${OPT//_/\.}; echo "$MODOPT"; }
+```
 
+- Set the required environment variables in the `tf_build.env` file
+```bash
+TF_VERSION_GIT_TAG=v2.0.0
+PYTHON_VERSION=3.7
+BAZEL_VERSION=0.26.1
+USE_GPU=0
+```
+
+- Then launch the build:
+```bash
 # Build the Docker image
 docker-compose build
 
@@ -47,36 +52,6 @@ docker-compose run tf
 # bash build.sh
 ```
 
-### TensorFlow GPU
-
-- Edit the `build.sh` file to modify TensorFlow compilation parameters. Then launch the build:
-
-```bash
-LINUX_DISTRO="ubuntu-16.04"
-# or LINUX_DISTRO="ubuntu-18.10"
-# or LINUX_DISTRO="centos-7.4"
-# or LINUX_DISTRO="centos-6.6"
-cd "tensorflow/$LINUX_DISTRO"
-
-# Set env variables
-export PYTHON_VERSION=3.6
-export TF_VERSION_GIT_TAG=v1.13.1
-export BAZEL_VERSION=0.19
-export USE_GPU=1
-export CUDA_VERSION=10.0
-export CUDNN_VERSION=7.5
-export NCCL_VERSION=2.4
-
-# Build the Docker image
-docker-compose build
-
-# Start the compilation
-docker-compose run tf
-
-# You can also do:
-# docker-compose run tf bash
-# bash build.sh
-```
 
 ---
 
