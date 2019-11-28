@@ -39,6 +39,8 @@ git clone --depth 1 --branch $TF_VERSION_GIT_TAG "https://github.com/tensorflow/
 TF_ROOT=/tensorflow
 cd $TF_ROOT
 
+git apply ./disable_ruy_avx.patch
+
 # Python path options
 export PYTHON_BIN_PATH=$(which python)
 export PYTHON_LIB_PATH="$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')"

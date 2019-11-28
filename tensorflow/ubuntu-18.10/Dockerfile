@@ -23,5 +23,6 @@ RUN wget "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 
 COPY build.sh /build.sh
 COPY cuda.sh /cuda.sh
+COPY disable_ruy_avx.patch /disable_ruy_avx.patch
 
 CMD bash build.sh
