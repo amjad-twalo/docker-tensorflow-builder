@@ -16,7 +16,7 @@ Compilation images are provided for Ubuntu 18.10.
 - Clone this repository:
 
 ```bash
-git clone https://github.com/hadim/docker-tensorflow-builder.git
+git clone https://github.com/amjad-twalo/docker-tensorflow-builder.git
 ```
 
 ### TensoFlow CPU
